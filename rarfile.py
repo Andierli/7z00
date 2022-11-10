@@ -1069,7 +1069,7 @@ class CommonParser:
         more_vols = False
         endarc = False
         volfile = self._rarfile
-        self._vol_list = [self._rarfile]
+        self._vol_list = [self._7zfile]
         raise_need_first_vol = False
         while True:
             if endarc:
@@ -1223,7 +1223,7 @@ class CommonParser:
             use_hack = 0
         elif inf._must_disable_hack():
             use_hack = 0
-        elif is_filelike(self._rarfile):
+        elif is_filelike(self._7zfile):
             pass
         elif inf.file_size > HACK_SIZE_LIMIT:
             use_hack = 0
@@ -1235,10 +1235,10 @@ class CommonParser:
             return self._open_clear(inf)
         elif use_hack:
             return self._open_hack(inf, pwd)
-        elif is_filelike(self._rarfile):
-            return self._open_unrar_membuf(self._rarfile, inf, pwd)
+        elif is_filelike(self._7zfile):
+            return self._open_unrar_membuf(self._7zfile, inf, pwd)
         else:
-            return self._open_unrar(self._rarfile, inf, pwd)
+            return self._open_unrar(self._7zfile, inf, pwd)
 
     def _open_clear(self, inf):
         return DirectReader(self, inf)
@@ -1249,7 +1249,7 @@ class CommonParser:
         rf = XFile(inf.volume_file, 0)
         rf.seek(inf.header_offset)
 
-        tmpfd, tmpname = mkstemp(suffix=".rar", dir=HACK_TMP_DIR)
+        tmpfd, tmpname = mkstemp(suffix=".7z", dir=HACK_TMP_DIR)
         tmpf = os.fdopen(tmpfd, "wb")
 
         try:
@@ -2848,7 +2848,7 @@ def _next_oldvol(volfile):
     """Old-style next volume
     """
     # rar -> r00
-    if volfile[-4:].lower() == ".rar":
+    if volfile[-4:].lower() == ".7z":
         return volfile[:-2] + "00"
     return _inc_volname(volfile, len(volfile) - 1)
 
@@ -3201,7 +3201,7 @@ def membuf_tempfile(memfile):
     """
     memfile.seek(0, 0)
 
-    tmpfd, tmpname = mkstemp(suffix=".rar", dir=HACK_TMP_DIR)
+    tmpfd, tmpname = mkstemp(suffix=".7z", dir=HACK_TMP_DIR)
     tmpf = os.fdopen(tmpfd, "wb")
 
     try:
